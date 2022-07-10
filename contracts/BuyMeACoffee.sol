@@ -45,6 +45,18 @@ contract BuyMeACoffee {
         emit NewMemo(msg.sender, block.timestamp, _name, _message);
     }
 
+    function buyLargeCoffee(string memory _name, string memory _message)
+        public
+        payable
+    {
+        require(
+            msg.value >= 3 * 10**15,
+            "can't buy a large coffee with less than 0.003 eth"
+        );
+        memos.push(Memo(msg.sender, block.timestamp, _name, _message));
+        emit NewMemo(msg.sender, block.timestamp, _name, _message);
+    }
+
     /**
         @dev send all the money to the contract owner
      */

@@ -33,13 +33,19 @@ async function main() {
   const buyMeACoffee = await BuyMeACoffee.deploy()
   await buyMeACoffee.deployed()
   console.log("BuyMeACoffee deployed to ", buyMeACoffee.address)
-  const addresses = [owner.address, tipper.address, buyMeACoffee.address]
+  const addresses = [owner.address, tipper.address, tipper2.address, tipper3.address, buyMeACoffee.address]
   console.log('--- Strart ---')
   await printBalances(addresses)
-  const tip = { value: hre.ethers.utils.parseEther("1") }
-  await buyMeACoffee.connect(tipper).buyCoffee("Diego", "1", tip)
-  await buyMeACoffee.connect(tipper2).buyCoffee("Ilaria", "2", tip)
-  await buyMeACoffee.connect(tipper3).buyCoffee("Qwerty", "3", tip)
+  const smallTip = { value: hre.ethers.utils.parseEther("0.001") }
+  const largeTip = { value: hre.ethers.utils.parseEther("0.003") }
+  await buyMeACoffee.connect(tipper).buyCoffee("Diego", "1", smallTip)
+  await buyMeACoffee.connect(tipper2).buyCoffee("Ilaria", "2", smallTip)
+  await buyMeACoffee.connect(tipper3).buyLargeCoffee("Qwerty", "3", largeTip)
+  try {
+    await buyMeACoffee.connect(tipper2).buyLargeCoffee("Diego", "2", smallTip)
+  } catch {
+    console.log('Failed because the value is too low for large coffee')
+  }
   await printBalances(addresses)
   console.log('--- bought coffeee ---')
   try {
