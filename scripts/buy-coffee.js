@@ -40,9 +40,17 @@ async function main() {
   await buyMeACoffee.connect(tipper).buyCoffee("Diego", "1", tip)
   await buyMeACoffee.connect(tipper2).buyCoffee("Ilaria", "2", tip)
   await buyMeACoffee.connect(tipper3).buyCoffee("Qwerty", "3", tip)
-  console.log('--- bought coffeee ---')
   await printBalances(addresses)
-  await buyMeACoffee.connect(owner).withdrawTips();
+  console.log('--- bought coffeee ---')
+  try {
+    await buyMeACoffee.connect(tipper).setWithdrawalAddress(tipper2.address)
+  } catch {
+    console.log('Failed the change because only ownwer can call this method')
+  }
+  console.log("test failing")
+  await buyMeACoffee.connect(owner).setWithdrawalAddress(tipper.address)
+  console.log("Changed the receiver of tips")
+  await buyMeACoffee.connect(tipper).withdrawTips();
   console.log('--- withDrawTips ---')
   await printBalances(addresses)
   console.log('--- memos ---')

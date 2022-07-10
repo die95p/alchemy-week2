@@ -23,9 +23,11 @@ contract BuyMeACoffee {
 
     // Address of conctract deployer
     address payable owner;
+    address payable withdrawalUser;
 
     constructor() {
         owner = payable(msg.sender);
+        withdrawalUser = payable(msg.sender);
     }
 
     //memory significa che non manteniamo nulla
@@ -47,10 +49,18 @@ contract BuyMeACoffee {
         @dev send all the money to the contract owner
      */
     function withdrawTips() public {
-        require(owner.send(address(this).balance));
+        require(withdrawalUser.send(address(this).balance));
     }
 
     function getMemos() public view returns (Memo[] memory) {
         return memos;
+    }
+
+    function setWithdrawalAddress(address _newAddress) public {
+        require(
+            msg.sender == owner,
+            "Only the owner can change receiver address"
+        );
+        withdrawalUser = payable(_newAddress);
     }
 }
